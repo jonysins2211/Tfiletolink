@@ -139,7 +139,7 @@ MSG_BUTTON_CLOSE = "✖ Close"
 
 MSG_WELCOME = (
     "🌟 **Welcome, {user_name}!** 🌟\n\n"
-    "I'm **Thunder File to Link Bot** ⚡\n"
+    "I'm **ML- File to Link Bot** ⚡\n"
     "I generate direct download and streaming links for your files.\n\n"
     "**How to use:**\n"
     "1. Send any file to me for private links.\n"
@@ -181,7 +181,7 @@ MSG_HELP = (
 )
 
 MSG_ABOUT = (
-    "🌟 **About Thunder File to Link Bot** ℹ️\n\n"
+    "🌟 **About ML - File to Link Bot** ℹ️\n\n"
     "I'm your go-to bot for **instant download & streaming!** ⚡\n\n"
     "**🚀 Key Features:**\n"
     "> **Instant Links:** Get your links within seconds.\n"
@@ -230,7 +230,7 @@ MSG_LINKS = (
     "📂 **File Size:** `{file_size}`\n\n"
     "🚀 **Download Link:**\n`{download_link}`\n\n"
     "🖥️ **Stream Link:**\n`{stream_link}`\n\n"
-    "⌛️ **Note: Links remain active while the bot is running and the file is accessible.**"
+    "⌛️ **🚸 𝙽ᴏᴛᴇ : 𝙼𝚊𝚗𝚊 𝙱𝚘𝚝 𝙽𝚊𝚌𝚑𝚒𝚝𝚑𝚎𝚢 𝙼𝚒 𝙵𝚛𝚒𝚎𝚗𝚍𝚜 𝙺𝚒 𝙺𝚞𝚍𝚊 𝚂𝚑𝚊𝚛𝚎 𝙲𝚑𝚎𝚢𝚊𝚗𝚍𝚒😇**"
 )
 
 # =====================================================================================
@@ -389,3 +389,4 @@ MSG_SYSTEM_STATS = (
 )
 
 MSG_DB_STATS = "📊 **Database Statistics**\n\n> 👥 **Total Users:** `{total_users}`"
+

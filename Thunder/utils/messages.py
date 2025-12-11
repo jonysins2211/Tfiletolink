@@ -149,7 +149,7 @@ MSG_WELCOME = (
 )
 
 MSG_HELP = (
-    "📘 **Thunder Bot - Help Guide** 📖\n\n"
+    "📘 **ML - File2Link Bot - Help Guide** 📖\n\n"
     "How to get direct download & streaming links:\n\n"
     "**🚀 Private Chat (with me):**\n"
     "> 1. Send me **any file** (document, video, audio, photo, etc.).\n"
@@ -389,4 +389,5 @@ MSG_SYSTEM_STATS = (
 )
 
 MSG_DB_STATS = "📊 **Database Statistics**\n\n> 👥 **Total Users:** `{total_users}`"
+
 

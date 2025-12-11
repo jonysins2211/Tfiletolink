@@ -86,7 +86,7 @@ MSG_DEAUTHORIZE_SUCCESS = (
     "> 🔒 Access: Revoked"
 )
 MSG_TOKEN_ACTIVATED = "✅ Token successfully activated!\n\n⏳ This token is valid for {duration_hours} hours."
-MSG_TOKEN_INVALID = " **📌 ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴠᴇʀɪꜰɪᴇᴅ ᴛᴏᴅᴀʏ, ᴛᴀᴘ ᴏɴ ᴛʜᴇ Activate access & ɢᴇᴛ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇss 12 hours\nʜᴏᴡ ᴛᴏ ᴏᴘᴇɴ ꜱʜᴏʀᴛᴇɴᴇʀ\n https://t.me/ML_Files/17 **\n\nɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ʟɪɴᴋꜱ, ᴛʜᴇɴ ʏᴏᴜ ᴄᴀɴ ᴛᴀᴋᴇ ᴘʀᴇᴍɪᴜᴍ sᴇʀᴠɪᴄᴇ (ɴᴏ ɴᴇᴇᴅ ᴛᴏ ᴠᴇʀɪꜰʏ) DM - @Mladminbot."
+MSG_TOKEN_INVALID = " **📌 ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴠᴇʀɪꜰɪᴇᴅ ᴛᴏᴅᴀʏ, ᴛᴀᴘ ᴏɴ ᴛʜᴇ Activate access & ɢᴇᴛ ᴜɴʟɪᴍɪᴛᴇᴅ ᴀᴄᴄᴇss 12 hours**\n\nɪꜰ ʏᴏᴜ ᴡᴀɴᴛ ᴅɪʀᴇᴄᴛ ʟɪɴᴋꜱ, ᴛʜᴇɴ ʏᴏᴜ ᴄᴀɴ ᴛᴀᴋᴇ ᴘʀᴇᴍɪᴜᴍ sᴇʀᴠɪᴄᴇ (ɴᴏ ɴᴇᴇᴅ ᴛᴏ ᴠᴇʀɪꜰʏ) DM - @Mladminbot."
 MSG_NO_AUTH_USERS = "ℹ️ **No Authorized Users Found:** The list is currently empty."
 MSG_AUTH_USER_INFO = """{i}. 👤 User ID: `{user_id}`
    • Authorized by: `{authorized_by}`
@@ -389,6 +389,7 @@ MSG_SYSTEM_STATS = (
 )
 
 MSG_DB_STATS = "📊 **Database Statistics**\n\n> 👥 **Total Users:** `{total_users}`"
+
 
 
 

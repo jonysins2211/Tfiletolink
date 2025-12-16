@@ -1,4 +1,4 @@
-# Thunder/utils/shortener.py
+# Thunder/utils/shortener.pyh
 
 import cloudscraper
 from abc import ABC, abstractmethod
@@ -144,3 +144,4 @@ async def shorten(url: str) -> str:
     if not _system.ready:
         await _system.initialize()
     return await _system.short_url(url)
+

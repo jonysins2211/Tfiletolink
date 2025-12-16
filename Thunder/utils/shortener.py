@@ -154,7 +154,7 @@ class ShortenerSystem:
 
             # 🔹 Step 2: wrap with Vercel redirect page
             redirect_url = (
-                "https://redirect-two-gamma.vercel.app/api/redirect"
+                "https://redirect-nu-drab.vercel.app/api/redirect"
                 f"?url={quote(short_url, safe='')}"
             )
 
@@ -175,4 +175,5 @@ async def shorten(url: str) -> str:
     if not _system.ready:
         await _system.initialize()
     return await _system.short_url(url)
+
 

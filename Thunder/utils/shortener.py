@@ -3,7 +3,6 @@ from abc import ABC, abstractmethod
 from base64 import b64encode
 from random import random, choice
 from urllib.parse import quote
-
 from Thunder.vars import Var
 from Thunder.utils.logger import logger
 
@@ -13,7 +12,7 @@ class ShortenerPlugin(ABC):
     @abstractmethod
     def matches(cls, domain: str) -> bool:
         pass
-
+    
     @abstractmethod
     async def shorten(self, url: str, api_key: str) -> str:
         pass
@@ -23,7 +22,7 @@ class LinkvertisePlugin(ShortenerPlugin):
     @classmethod
     def matches(cls, domain: str) -> bool:
         return "linkvertise" in domain
-
+    
     async def shorten(self, url: str, api_key: str) -> str:
         encoded_url = quote(b64encode(url.encode("utf-8")))
         return choice([
@@ -38,7 +37,7 @@ class BitlyPlugin(ShortenerPlugin):
     @classmethod
     def matches(cls, domain: str) -> bool:
         return "bitly.com" in domain
-
+    
     async def shorten(self, url: str, api_key: str) -> str:
         response = self.session.post(
             "https://api-ssl.bit.ly/v4/shorten",
@@ -54,7 +53,7 @@ class OuoIoPlugin(ShortenerPlugin):
     @classmethod
     def matches(cls, domain: str) -> bool:
         return "ouo.io" in domain
-
+    
     async def shorten(self, url: str, api_key: str) -> str:
         response = self.session.get(f"http://ouo.io/api/{api_key}?s={url}")
         if response.status_code == 200 and response.text:
@@ -66,7 +65,7 @@ class CuttLyPlugin(ShortenerPlugin):
     @classmethod
     def matches(cls, domain: str) -> bool:
         return "cutt.ly" in domain
-
+    
     async def shorten(self, url: str, api_key: str) -> str:
         response = self.session.get(
             f"http://cutt.ly/api/api.php?key={api_key}&short={url}"
@@ -80,7 +79,7 @@ class GenericShortenerPlugin(ShortenerPlugin):
     @classmethod
     def matches(cls, domain: str) -> bool:
         return True
-
+    
     async def shorten(self, url: str, api_key: str) -> str:
         response = self.session.get(
             f"https://{self.domain}/api?api={api_key}&url={quote(url)}"
@@ -95,29 +94,29 @@ class ShortenerSystem:
         self.session = None
         self.plugin = None
         self.ready = False
-
+    
     def _get_plugin_class(self, domain: str):
         for plugin_class in ShortenerPlugin.__subclasses__():
             if plugin_class.matches(domain):
                 return plugin_class
         return GenericShortenerPlugin
-
+    
     async def initialize(self) -> bool:
         if self.ready:
             return True
-
+        
         if not (
             getattr(Var, "SHORTEN_ENABLED", False) or
             getattr(Var, "SHORTEN_MEDIA_LINKS", False)
         ):
             return False
-
+        
         site = getattr(Var, "URL_SHORTENER_SITE", "")
         api_key = getattr(Var, "URL_SHORTENER_API_KEY", "")
-
+        
         if not (site and api_key):
             return False
-
+        
         try:
             self.session = cloudscraper.create_scraper(
                 browser={
@@ -128,44 +127,39 @@ class ShortenerSystem:
                 },
                 delay=1
             )
-
+            
             plugin_class = self._get_plugin_class(site)
             self.plugin = plugin_class()
             self.plugin.session = self.session
             self.plugin.domain = site
             self.ready = True
             return True
-
+        
         except Exception as e:
             logger.error(
                 f"Failed to initialize ShortenerSystem: {e}",
                 exc_info=True
             )
             return False
-
+    
     async def short_url(self, url: str) -> str:
         if not self.ready:
             return url
-
+        
         try:
-            # 1️⃣ Create shortener link (internal only)
+            # ðŸ”¹ Step 1: get shortener link
             short_url = await self.plugin.shorten(
                 url, Var.URL_SHORTENER_API_KEY
             )
 
-            # 2️⃣ Use EXISTING verification token (12h token)
-            verify_token = getattr(Var, "VERIFY_TOKEN", None)
-
-            if not verify_token:
-                # fallback – send normal shortener if token missing
-                return short_url
-
-            # 3️⃣ Final secure redirect link
-            return (
+            # ðŸ”¹ Step 2: wrap with Vercel redirect page
+            redirect_url = (
                 "https://movie-loverzz-files.vercel.app/api/redirect"
-                f"?token={verify_token}"
+                f"?url={quote(short_url, safe='')}"
             )
 
+            return redirect_url
+        
         except Exception as e:
             logger.error(
                 f"Error shortening URL {url}: {e}",
@@ -181,3 +175,5 @@ async def shorten(url: str) -> str:
     if not _system.ready:
         await _system.initialize()
     return await _system.short_url(url)
+
+

@@ -1,5 +1,3 @@
-# Thunder/utils/shortener.pyh
-
 import cloudscraper
 from abc import ABC, abstractmethod
 from base64 import b64encode
@@ -7,6 +5,7 @@ from random import random, choice
 from urllib.parse import quote
 from Thunder.vars import Var
 from Thunder.utils.logger import logger
+
 
 class ShortenerPlugin(ABC):
     @classmethod
@@ -17,6 +16,7 @@ class ShortenerPlugin(ABC):
     @abstractmethod
     async def shorten(self, url: str, api_key: str) -> str:
         pass
+
 
 class LinkvertisePlugin(ShortenerPlugin):
     @classmethod
@@ -31,6 +31,7 @@ class LinkvertisePlugin(ShortenerPlugin):
             f"https://direct-link.net/{api_key}/{random() * 1000}/dynamic?r={encoded_url}",
             f"https://file-link.net/{api_key}/{random() * 1000}/dynamic?r={encoded_url}",
         ])
+
 
 class BitlyPlugin(ShortenerPlugin):
     @classmethod
@@ -47,6 +48,7 @@ class BitlyPlugin(ShortenerPlugin):
             return response.json()["link"]
         return url
 
+
 class OuoIoPlugin(ShortenerPlugin):
     @classmethod
     def matches(cls, domain: str) -> bool:
@@ -58,16 +60,20 @@ class OuoIoPlugin(ShortenerPlugin):
             return response.text
         return url
 
+
 class CuttLyPlugin(ShortenerPlugin):
     @classmethod
     def matches(cls, domain: str) -> bool:
         return "cutt.ly" in domain
     
     async def shorten(self, url: str, api_key: str) -> str:
-        response = self.session.get(f"http://cutt.ly/api/api.php?key={api_key}&short={url}")
+        response = self.session.get(
+            f"http://cutt.ly/api/api.php?key={api_key}&short={url}"
+        )
         if response.status_code == 200:
             return response.json()["url"]["shortLink"]
         return url
+
 
 class GenericShortenerPlugin(ShortenerPlugin):
     @classmethod
@@ -75,10 +81,13 @@ class GenericShortenerPlugin(ShortenerPlugin):
         return True
     
     async def shorten(self, url: str, api_key: str) -> str:
-        response = self.session.get(f"https://{self.domain}/api?api={api_key}&url={quote(url)}")
+        response = self.session.get(
+            f"https://{self.domain}/api?api={api_key}&url={quote(url)}"
+        )
         if response.status_code == 200:
             return response.json().get("shortenedUrl", url)
         return url
+
 
 class ShortenerSystem:
     def __init__(self):
@@ -90,15 +99,16 @@ class ShortenerSystem:
         for plugin_class in ShortenerPlugin.__subclasses__():
             if plugin_class.matches(domain):
                 return plugin_class
-
         return GenericShortenerPlugin
     
     async def initialize(self) -> bool:
         if self.ready:
             return True
         
-        if not (getattr(Var, "SHORTEN_ENABLED", False) or 
-                getattr(Var, "SHORTEN_MEDIA_LINKS", False)):
+        if not (
+            getattr(Var, "SHORTEN_ENABLED", False) or
+            getattr(Var, "SHORTEN_MEDIA_LINKS", False)
+        ):
             return False
         
         site = getattr(Var, "URL_SHORTENER_SITE", "")
@@ -110,10 +120,10 @@ class ShortenerSystem:
         try:
             self.session = cloudscraper.create_scraper(
                 browser={
-                    'browser': 'chrome',
-                    'platform': 'windows',
-                    'desktop': True,
-                    'mobile': False
+                    "browser": "chrome",
+                    "platform": "windows",
+                    "desktop": True,
+                    "mobile": False
                 },
                 delay=1
             )
@@ -124,8 +134,12 @@ class ShortenerSystem:
             self.plugin.domain = site
             self.ready = True
             return True
+        
         except Exception as e:
-            logger.error(f"Failed to initialize ShortenerSystem: {e}", exc_info=True)
+            logger.error(
+                f"Failed to initialize ShortenerSystem: {e}",
+                exc_info=True
+            )
             return False
     
     async def short_url(self, url: str) -> str:
@@ -133,15 +147,31 @@ class ShortenerSystem:
             return url
         
         try:
-            return await self.plugin.shorten(url, Var.URL_SHORTENER_API_KEY)
+            # 🔹 Step 1: get shortener link
+            short_url = await self.plugin.shorten(
+                url, Var.URL_SHORTENER_API_KEY
+            )
+
+            # 🔹 Step 2: wrap with Vercel redirect page
+            redirect_url = (
+                "https://your-project.vercel.app/api/redirect"
+                f"?url={quote(short_url, safe='')}"
+            )
+
+            return redirect_url
+        
         except Exception as e:
-            logger.error(f"Error shortening URL {url}: {e}", exc_info=True)
+            logger.error(
+                f"Error shortening URL {url}: {e}",
+                exc_info=True
+            )
             return url
 
+
 _system = ShortenerSystem()
+
 
 async def shorten(url: str) -> str:
     if not _system.ready:
         await _system.initialize()
     return await _system.short_url(url)
-

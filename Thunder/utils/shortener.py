@@ -6,6 +6,26 @@ from urllib.parse import quote
 from Thunder.vars import Var
 from Thunder.utils.logger import logger
 
+# 🔐 Encryption imports
+import json
+import time
+from cryptography.fernet import Fernet
+
+
+# 🔑 FERNET KEY (USE SAME KEY IN redirect.js SERVER)
+# Generate once using: Fernet.generate_key()
+FERNET_KEY = b"PASTE_YOUR_FERNET_KEY_HERE"
+fernet = Fernet(FERNET_KEY)
+
+
+def generate_redirect_token(short_url: str, hours=12) -> str:
+    payload = {
+        "url": short_url,
+        "exp": time.time() + (hours * 3600)
+    }
+    data = json.dumps(payload).encode()
+    return fernet.encrypt(data).decode()
+
 
 class ShortenerPlugin(ABC):
     @classmethod
@@ -147,19 +167,15 @@ class ShortenerSystem:
             return url
         
         try:
-            # 🔹 Step 1: get shortener link
             short_url = await self.plugin.shorten(
                 url, Var.URL_SHORTENER_API_KEY
             )
 
-            # 🔹 Step 2: wrap with Vercel redirect page
-            redirect_url = (
-                "https://redirect-nu-drab.vercel.app/api/redirect"
-                f"?url={quote(short_url, safe='')}"
-            )
+            token = generate_redirect_token(short_url)
 
-            return redirect_url
-        
+            # 🔗 FINAL SECURE LINK
+            return f"https://your-domain/token/{token}"
+
         except Exception as e:
             logger.error(
                 f"Error shortening URL {url}: {e}",
@@ -175,5 +191,3 @@ async def shorten(url: str) -> str:
     if not _system.ready:
         await _system.initialize()
     return await _system.short_url(url)
-
-

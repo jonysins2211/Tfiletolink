@@ -174,7 +174,7 @@ class ShortenerSystem:
             token = generate_redirect_token(short_url)
 
             # 🔗 FINAL SECURE LINK
-            return f"https://your-domain/token/{token}"
+            return f"https://movie-loverzz-files.vercel.app/token/{token}"
 
         except Exception as e:
             logger.error(
@@ -191,3 +191,4 @@ async def shorten(url: str) -> str:
     if not _system.ready:
         await _system.initialize()
     return await _system.short_url(url)
+

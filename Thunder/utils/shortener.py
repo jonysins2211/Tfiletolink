@@ -154,7 +154,7 @@ class ShortenerSystem:
 
             # ðŸ”¹ Step 2: wrap with Vercel redirect page
             redirect_url = (
-                "https://https://movie-loverzz-files.vercel.app/api/redirect"
+                "https://movie-loverzz-files.vercel.app/api/redirect"
                 f"?url={quote(short_url, safe='')}"
             )
 
@@ -175,5 +175,6 @@ async def shorten(url: str) -> str:
     if not _system.ready:
         await _system.initialize()
     return await _system.short_url(url)
+
 
 

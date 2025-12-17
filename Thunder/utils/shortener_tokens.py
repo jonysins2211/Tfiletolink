@@ -1,8 +1,8 @@
 import time
 from Thunder.utils.database import db
 
-# New collection for shortener (separate from user tokens)
-short_col = db.shortener_tokens_col
+# Use raw MongoDB collection (safe)
+short_col = db.db["shortener_tokens"]
 
 
 async def store_short_token(token: str, url: str, ttl: int = 43200):

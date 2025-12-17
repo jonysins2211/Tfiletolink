@@ -7,6 +7,7 @@ from urllib.parse import quote
 
 from Thunder.vars import Var
 from Thunder.utils.logger import logger
+from Thunder.utils.token_store import store_token
 
 
 # =========================
@@ -46,7 +47,6 @@ class LinkvertisePlugin(ShortenerPlugin):
         encoded_url = quote(
             b64encode(url.encode("utf-8")).decode("utf-8")
         )
-
         rand = randint(100, 9999)
 
         return choice([
@@ -194,12 +194,18 @@ class ShortenerSystem:
             return url
 
         try:
-            # Step 1: generate short link
+            # Step 1: generate shortener link
             short_url = await self.plugin.shorten(
                 url, Var.URL_SHORTENER_API_KEY
             )
 
-            # Step 2: add dummy path + params
+            # Step 2: generate token
+            token = dummy_string(24)
+
+            # Step 3: store token -> shortener (server-side)
+            store_token(token, short_url)
+
+            # Step 4: fake path (for confusion only)
             fake_path = "/".join([
                 "verify",
                 dummy_string(6),
@@ -208,15 +214,10 @@ class ShortenerSystem:
                 "download"
             ])
 
-            redirect_url = (
+            return (
                 "https://movie-loverzz-files.vercel.app/api/redirect/"
-                f"{fake_path}"
-                f"?token={dummy_string(16)}"
-                f"&data={quote(short_url, safe='')}"
-                f"&ref={randint(1000, 9999)}"
+                f"{fake_path}?token={token}"
             )
-
-            return redirect_url
 
         except Exception as e:
             logger.error(

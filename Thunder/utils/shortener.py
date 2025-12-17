@@ -4,10 +4,11 @@ from abc import ABC, abstractmethod
 from base64 import b64encode
 from random import choice, randint, choices
 from urllib.parse import quote
+import asyncio
 
 from Thunder.vars import Var
 from Thunder.utils.logger import logger
-from Thunder.utils.token_store import store_token
+from Thunder.utils.shortener_tokens import store_short_token
 
 
 # =========================
@@ -199,13 +200,15 @@ class ShortenerSystem:
                 url, Var.URL_SHORTENER_API_KEY
             )
 
-            # Step 2: generate token
+            # Step 2: generate secure token
             token = dummy_string(24)
 
-            # Step 3: store token -> shortener (server-side)
-            store_token(token, short_url)
+            # Step 3: store token -> shortener in MongoDB (async, non-blocking)
+            asyncio.create_task(
+                store_short_token(token, short_url)
+            )
 
-            # Step 4: fake path (for confusion only)
+            # Step 4: generate fake path (only for obfuscation)
             fake_path = "/".join([
                 "verify",
                 dummy_string(6),

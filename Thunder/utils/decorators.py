@@ -115,7 +115,7 @@ async def require_token(client, message: Message):
                 reply_markup=InlineKeyboardMarkup([
                     [InlineKeyboardButton("Activate Access", url=short_url)]
                 ]),
-                quote=True
+                quote=True,
                 protect_content=True
             )
         except FloodWait as e:
@@ -180,5 +180,6 @@ async def owner_only(client, update):
         except Exception as inner_e:
             logger.error(f"Failed to send error answer in owner_only: {inner_e}", exc_info=True)
         return False
+
 
 

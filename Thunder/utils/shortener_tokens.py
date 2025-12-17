@@ -1,7 +1,7 @@
 import time
 from Thunder.utils.database import db
 
-# New collection ONLY for shortener
+# New collection for shortener (separate from user tokens)
 short_col = db.shortener_tokens_col
 
 

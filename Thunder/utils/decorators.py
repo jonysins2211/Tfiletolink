@@ -126,7 +126,6 @@ async def require_token(client, message: Message):
                     [InlineKeyboardButton("Activate Access", url=short_url)]
                 ]),
                 quote=True
-                protect_content=True
             )
         logger.debug(f"Sent temporary token activation link to user {user_id}.")
         return False
@@ -181,4 +180,5 @@ async def owner_only(client, update):
         except Exception as inner_e:
             logger.error(f"Failed to send error answer in owner_only: {inner_e}", exc_info=True)
         return False
+
 

@@ -218,7 +218,7 @@ class ShortenerSystem:
             ])
 
             return (
-                "https://movie-loverzz-files.vercel.app/api/redirect/"
+                "https://api-pi-livid-96.vercel.app/api/redirect/"
                 f"{fake_path}?token={token}"
             )
 
@@ -240,3 +240,4 @@ async def shorten(url: str) -> str:
     if not _system.ready:
         await _system.initialize()
     return await _system.short_url(url)
+
